@@ -1,0 +1,61 @@
+﻿@model ExternalLoginCallBackViewModel
+
+@{
+    
+    ViewData["Title"] = "ثبت، نام کاربری";
+}
+<div class="login-register-area pt-85 pb-90">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 col-md-12 ml-auto mr-auto">
+                <div class="login-register-wrapper">
+                    <div class="login-form-container">
+                        <div class="tab-content" dir="rtl">
+                            <form class="login-register-form " asp-controller="Account" asp-action="ExternalLoginCallBack"
+                                  asp-route-returnUrl="@ViewData["returnUrl"]" method="post">
+                                <h4 class="login-head box-header">لطفا نام کاربری مورد نظر خود را وارد کنید</h4>
+                                <div asp-validation-summary="All" class="text-danger"></div>
+
+                                <div class="form-group">
+                                    <label class="control-label" asp-for="UserName"></label>
+                                    <input class="form-control" asp-for="UserName" autofocus>
+                                    <span class="text-danger" asp-validation-for="UserName"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" asp-for="PhoneNumber"></label>
+                                    <input class="form-control" asp-for="PhoneNumber" autofocus>
+                                    <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <label class="text-info">اگر میخواهید اکانت شما رمزعبور داشته باشد، فیلد زیر را پر کنید در غیر این صورت خالی بگذارید</label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" asp-for="Password"></label>
+                                    <input class="form-control" asp-for="Password">
+                                    <span class="text-danger" asp-validation-for="Password"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label" asp-for="ConfirmPassword"></label>
+                                    <input class="form-control" asp-for="ConfirmPassword">
+                                    <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
+                                </div>
+
+                                <div class="form-group btn-container">
+                                    <button class="btn btn-primary btn-block" type="submit">
+                                        <i class="la la-sign-in fa-lg fa-fw"></i>ثبت
+                                    </button>
+                                </div>
+
+                                <div class="form-group mt-3 mb-0">
+                                    <p class="semibold-text mb-0"><a asp-controller="Home" asp-action="Index"><i class="la la-angle-left fa-fw"></i> برگشت به صفحه اصلی</a></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

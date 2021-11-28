@@ -1,0 +1,65 @@
+﻿@model UserMiniCartViewModel
+
+<div id="innerview" class="col-xl-1 col-lg-2">
+    <div class="cart-wrap cart-wrap-3 cart-wrap-3-white">
+        <button class="cart-active">
+            <img src="/DoxoneAssets/assets/images/AddOneimages/icons8-cart-128.png" width="50px" /> <br>
+            <span class="mini-cart-price-3"></span>
+
+            @foreach (var item in Model.Factors)
+            {
+                <span class="count-style-3">@item.FactorDetails.Sum(f => f.Count)</span>
+            }
+        </button>
+        <div class="shopping-cart-content">
+            <div class="shopping-cart-top">
+                <h4>اخرین محصولات اضافه شده</h4>
+                <a class="cart-close"><i class="la la-close"></i></a>
+            </div>
+            <ul>
+                @foreach (var item in Model.FactorDitailsList)
+                {
+                    foreach (var miniOrder in item)
+                    {
+                        <li class="single-shopping-cart">
+                            <div class="shopping-cart-img">
+                                <a href="#"><img alt="" src="@($"/images/db_Images/{miniOrder.Product.Id}-1.jpg")" width="50px" height="50px" style="object-fit: contain;"></a>
+                                <div class="item-close">
+                                    <a href="#"><i class="sli sli-close"></i></a>
+                                </div>
+                            </div>
+                            <div class="shopping-cart-title mr-10">
+                                <h4><a href="#">@miniOrder.Product.Name</a></h4>
+                                <span>@miniOrder.Price.ToString("#,0")</span>
+                            </div>
+                            <div class="shopping-cart-delete">
+                                <a onclick="Delete(@miniOrder.DetailId)"><i class="la la-trash"></i></a>
+                                <input id="GetControlName" type="hidden" value="@ViewData["Home"]"/>
+                            </div>
+                        </li>
+                    }
+                }
+
+            </ul>
+            <div class="shopping-cart-bottom">
+                <div class="shopping-cart-total">
+                    <h4>
+                        :مجموع کل<span class="shop-total" style="font-weight: 900; color: #2ecd92;">
+                            @Model.Factors.Sum(f => f.FactorDetails.Sum(s => s.Price * s.Count)).ToString("#,0") تومان
+                        </span>
+                    </h4>
+                </div>
+                <div class="shopping-cart-btn btn-hover default-btn text-center">
+                    <a class="black-color" asp-controller="Home" asp-action="ShowCart">ادامه در سبد خرید</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+   
+
+
+
+

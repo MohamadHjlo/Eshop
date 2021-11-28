@@ -1,0 +1,35 @@
+﻿@model AddEditProductViewModel
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+<h1> حذف کالا  </h1>
+
+<form method="post">
+    <dl class="dl-horizontal">
+        <dd><label asp-for="@Model.Product.Name"></label></dd>
+        <dt>
+            <input asp-for="@Model.Product.Name" class="form-control" readonly />
+            <span asp-validation-for="@Model.Product.Name"></span>
+        </dt>
+        <dd><label asp-for="@Model.Product.Describtion"></label></dd>
+        <dt>
+            <textarea asp-for="@Model.Product.Describtion" class="form-control" readonly> </textarea>
+            <span asp-validation-for="@Model.Product.Describtion"></span>
+        </dt>
+        <dd><label> تصویر </label></dd>
+        @foreach (var item in Model.ProductPics)
+        {
+            ViewBag.picnumcount++;
+            <dt>
+                <img src="/Images/db_Images/@item.ProductId-@(ViewBag.picnumcount).jpg" style="max-width: 200px" />
+            </dt>
+        }
+        <dd></dd>
+        <dt>
+            <input type="hidden" asp-for="@Model.Product.Id" readonly />
+            <input type="submit" class="myButton-danger" value="حذف" />
+        </dt>
+    </dl>
+</form>

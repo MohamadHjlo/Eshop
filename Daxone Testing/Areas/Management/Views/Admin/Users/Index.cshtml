@@ -1,0 +1,397 @@
+﻿@addTagHelper *, LazZiya.TagHelpers
+@model UsersInIndexViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Zero configuration table -->
+        <section id="configuration">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title-wrap bar-success">
+                                <h4 class="card-title">لیست کاربران</h4>
+                            </div>
+                        </div>
+                        <div class="card-body collapse show">
+                            <div class="card-block card-dashboard">
+
+                                <p class="card-text">لیست کاربران فروشگاه حاجی مارکت</p>
+                                <div class="row">
+                                    <div class="col-md-9">
+
+                                        <form method="get" class="col-xl-5 col-lg-6 col-md-12 mb-1">
+                                            <fieldset class="form-group">
+                                                <div class="row">
+                                                    <input type="text" class="form-control col-8 ml-2" name="serchkey">
+                                                    <button class="btn btn-success col-3">جستجو</button>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <a asp-area="Management" asp-controller="ManageUser" asp-action="CreateUser"><button class="btn btn-info"> افزودن کاربر جدید </button></a>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="alert alert-pink"> تعداد کل کاربران سایت: @Model.Users.Count() </div>
+                                </div>
+                                <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                                    <div class="col-sm-12">
+                                        <table class="table font-small-2 table-striped table-bordered zero-configuration dataTable" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="نام: activate to sort column descending" style="width: 6%;">نام کاربری</th>
+                                                    <th class="sorting text-center" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="ایمیل: activate to sort column ascending" style="width: 8%;">مقام کاربر</th>
+                                                    <th class="sorting text-center" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="ایمیل: activate to sort column ascending" style="width: 10%;">ایمیل</th>
+                                                    <th class="sorting text-center" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="تلفن: activate to sort column ascending" style="width: 10%;">شماره تلفن</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                @foreach (var item in Model.Users)
+                                                {
+                                                    <tr role="row" class="odd">
+                                                        <td class="sorting_1 text-center">@item.UserName </td>
+                                                        <td class="sorting_1 text-center">@item.UserRoles.FirstOrDefault() <button onclick="ShowModalEditRole('@item.Id', '@item.UserRoles.FirstOrDefault()')" class="btn btn-deep-orange">تغییر</button> </td>
+                                                        <td>@item.Email</td>
+                                                        <td>@((@item.PhoneNumber)==null?"ثبت نشده":@item.PhoneNumber)</td>
+                                                        <td>
+                                                            <button class="btn btn-teal" onclick="ShowModalEdituser('@item.Id', '@item.UserName','@item.Email')">ویرایش سریع</button>
+                                                            <a asp-controller="ManageUser" asp-action="EditUser" asp-route-Id="@item.Id"><button class="btn btn-info">ویرایش کامل</button></a>
+                                                            <button class="btn btn-danger" onclick="DeleteUser('@item.Id')">حذف</button>
+                                                            @if (item.Id != null)
+                                                            {
+                                                                <button class="btn btn-warning" onclick="UserSatusChange('@item.Id')">غیر فعال</button>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <button class="btn btn-info" onclick="UserSatusChange('@item.Id')">فعال کردن کاربر </button>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <paging total-records="Model.TotalRecords"
+                                            page-no="Model.CurrentPage"
+                                            page-size="Model.PageSize"
+                                            show-prev-next="true"
+                                            show-total-pages="true"
+                                            show-total-records="true"
+                                            show-page-size-nav="true"
+                                            show-first-numbered-page="true"
+                                            show-last-numbered-page="true"
+                                            query-string-key-page-no="Page"
+                                            query-string-key-page-size="PageSize"
+                                            gap-size="2">
+                                    </paging>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+
+    <link href="~/Sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <script src="~/Sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        function DeleteUser(UserId) {
+            swal.fire({
+                title: 'حذف کاربر',
+                text: "کاربر گرامی از حذف کاربر مطمئن هستید؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#7cacbe',
+                confirmButtonText: 'بله ، کاربر حذف شود',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+                    var postData = {
+                        'UserId': UserId,
+                    };
+
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        type: "POST",
+                        url: "ManageUser/DeleteUser/" + UserId,
+                        data: postData,
+                        success: function (data) {
+                            if (data == true) {
+                                swal.fire(
+                                    'موفق!',
+                                    data.message,
+                                    'success'
+                                ).then(function (isConfirm) {
+                                    location.reload();
+                                });
+                            }
+                            else {
+
+                                swal.fire(
+                                    'هشدار!',
+                                    data.message,
+                                    'warning'
+                                );
+
+                            }
+                        },
+                        error: function (request, status, error) {
+                            alert(request.responseText);
+                        }
+
+                    });
+
+                }
+            })
+        }
+
+
+        function UserSatusChange(UserId) {
+            swal.fire({
+                title: 'تغییر وضعیت کاربر',
+                text: "کاربر گرامی از تغییر وضعیت کاربر مطمئن هستید؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#7cacbe',
+                confirmButtonText: 'بله ، تغییر وضعیت انجام شود',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+
+                    var postData = {
+                        'UserId': UserId
+                    };
+
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        type: "POST",
+                        url: "EditUser",
+                        data: postData,
+                        success: function (data) {
+                            if (data.isSuccess == true) {
+                                swal.fire(
+                                    'موفق!',
+                                    data.message,
+                                    'success'
+                                ).then(function (isConfirm) {
+                                    location.reload();
+                                });
+                            }
+                            else {
+
+                                swal.fire(
+                                    'هشدار!',
+                                    data.message,
+                                    'warning'
+                                );
+
+                            }
+                        },
+                        error: function (request, status, error) {
+                            alert(request.responseText);
+                        }
+
+                    });
+
+                }
+            })
+        }
+
+
+        function Edituser() {
+
+            var userId = $("#Edit_UserId").val();
+            var fullName = $("#Edit_Username").val();
+            var email = $("#Edit_UserEmail").val();
+
+            var postData = {
+                'Id': userId,
+                'UserName': fullName,
+                'Email': email
+            };
+
+
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                type: "POST",
+                url: "ManageUser/EditUser",
+                data: postData,
+                success: function (data) {
+                    if (data == true) {
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            location.reload();
+                        });
+                    }
+                    else {
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            $('#EditUser').modal('hide');
+
+        }
+
+        function EditRole() {
+
+            var userId = $("#Edit_UserIdforRole").val();
+            var role = $("#Edit_UserRole").val();
+
+            var postData = {
+                'Id': userId,
+                'UserRoles': role
+            };
+
+
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                type: "POST",
+                url: "ManageUser/EditUser",
+                data: postData,
+                success: function (data) {
+                    if (data == true) {
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            location.reload();
+                        });
+                    }
+                    else {
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            $('#EditUser').modal('hide');
+
+        }
+        function ShowModalEdituser(UserId, Username, email) {
+            $('#Edit_Username').val(Username),
+                $('#Edit_UserId').val(UserId),
+                $('#Edit_UserEmail').val(email),
+                $('#EditUser').modal('show');
+        }
+        function ShowModalEditRole(UserId, role) {
+            $('#Edit_UserIdforRole').val(UserId),
+                $('#Edit_UserRole').val(role),
+                $('#EditUserRole').modal('show');
+        }
+
+    </script>
+
+
+}
+
+
+@section Modals
+{
+    <!-- Modal Edit User -->
+    <div class="modal fade" id="EditUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">ویرایش کاربر</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <input type="hidden" id="Edit_UserId" />
+                            <label for="basicInput">نام کاربری:@Model.UserName</label>
+                            <input type="text" class="form-control" id="Edit_Username">
+                        </fieldset>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <input type="hidden" id="Edit_UserId" />
+                            <label for="basicInput">ایمیل : @Model.Email</label>
+                            <input type="text" class="form-control" id="Edit_UserEmail">
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                    <a class="btn btn-primary" onclick="Edituser()">اعمال تغییرات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="EditUserRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">ویرایش کاربر</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <input type="hidden" id="Edit_UserIdforRole" />
+                            <label for="basicSelect">نقش</label>
+                            <select class="form-control" id="Edit_UserRole" name="UserRoles" asp-items="@(new SelectList(Model.ValidRoles.ToList()))"></select>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                    <a class="btn btn-primary" onclick="EditRole()">اعمال تغییرات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

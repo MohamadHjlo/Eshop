@@ -1,0 +1,257 @@
+﻿@using PersianTranslation.DateConvertor
+@model MyAccountViewmodel
+<head>
+
+</head>
+
+<div class="breadcrumb-area">
+    <div class="container" style="background: linear-gradient(123deg, #ffffff, rgb(255 255 255), #fff3a000, rgb(255 255 255), rgb(255 255 255)), url(/Images/Backgrounds/email-pattern.png) repeat #fff; padding: 18px; ">
+        <div class="breadcrumb-content text-center">
+            <h1 class="box-header text-lg-header">حساب کاربری من</h1>
+        </div>
+    </div>
+</div>
+<!-- my account wrapper start -->
+<div class="my-account-wrapper pt-100 pb-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- My Account Page Start -->
+                <div class="myaccount-page-wrapper">
+                    <!-- My Account Tab Menu Start -->
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 ">
+                            <div class="myaccount-tab-menu nav box-groups-info myAccountBoxStyle" role="tablist">
+                                <a href="#dashboad" class="active pane-border-top" data-toggle="tab"><i class="la big la-dashboard"></i> داشبورد</a>
+                                <a href="#orders" data-toggle="tab"><i class="la big la-cart-arrow-down"></i> فاکتور ها</a>
+                                <a href="#download" data-toggle="tab"><i class="la big la-heart-o"></i> علاقه مندی ها</a>
+                                <a href="#payment-method" data-toggle="tab"><i class="la big la-credit-card"></i> پرداخت ها</a>
+                                <a href="#address-edit" data-toggle="tab"><i class="la big la-map-marker"></i> آدرس</a>
+                                <a href="#account-info" data-toggle="tab"><i class="la big la-user"></i> جزییات حساب</a>
+                                <a asp-controller="Account" asp-action="Logout" class="pane-border-bottom"><i class="la big la-sign-out"></i> خروج از حساب</a>
+                            </div>
+                        </div>
+                        <!-- My Account Tab Menu End -->
+                        <!-- My Account Tab Content Start -->
+                        <div class="col-lg-9 col-md-8">
+                            <div class="tab-content" id="myaccountContent">
+                                <!-- Single Tab Content Start -->
+                                <div class="tab-pane fade show active pane-border-top"
+                                     id="dashboad"
+                                     role="tabpanel">
+                                    <div class="myaccount-content">
+                                        <h3>داشبورد </h3>
+                                        <div class="welcome">
+                                            <p>
+                                                سلام, <strong class="text-sm-center">@Model.User.UserName</strong> (یا نه
+                                                <strong>Tuntuni !</strong><a href="login-register.html" class="logout">
+                                                    خروج
+                                                </a>)
+                                            </p>
+                                        </div>
+
+                                        <p class="mb-0">
+                                            توی داشبورد اکانتت می تونی به راحتی اخرین خرید ها،
+                                            کالا های موزد علاقه،نشان شده ها،کیف پول دیجیتال،
+                                            تیکت هایی که ثبت کردیو خیلی چیزای
+                                            دیگرو بهشون دسترسی داشته باشی!
+                                            بهمون کمک کن تا هرروز بهتر شیم تا بتونیم خدمات بیشتری بهت ارائه بدیم!
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- Single Tab Content End -->
+                                <!-- Single Tab Content Start -->
+                                <div class="tab-pane fade" id="orders" role="tabpanel">
+                                    <div class="myaccount-content">
+                                        <h1 class="box-groups-info box-header text-lg-header" style="padding-top: 0;">فاکتور ها</h1>
+                                        <div class="la-check-circle myaccount-table table-responsive text-center">
+                                            <table class="table table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr class="text-center">
+                                                        <th>شماره فاکتور</th>
+                                                        <th>تاریخ</th>
+                                                        <th>وضعیت</th>
+                                                        <th>تعداد</th>
+                                                        <th>قیمت</th>
+                                                        <th>دستورات</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.UserFactor != null)
+                                                    {
+                                                        @foreach (var factor in Model.UserFactor)
+                                                        {
+                                                            @foreach (var factordetail in factor.FactorDetails)
+                                                            {
+                                                                <tr>
+                                                                    <td>@factor.FactorId</td>
+                                                                    <td>@factor.CreatDate.ToShamsi()</td>
+                                                                    <td><i class="@((factor.IsFinaly==true?"la la-check-circle":"la la-times-circle"))"></i></td>
+                                                                    <td>@factordetail.Count</td>
+                                                                    <td>@((factordetail.Count*factordetail.Price).ToString("#,0"))</td>
+                                                                    <td>
+                                                                        <a href="cart.html" class="check-btn sqr-btn">مشاهده جزئیات</a>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="alert alert-danger">فاکتوری وجود ندارد</div>
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Single Tab Content End -->
+                                <!-- Single Tab Content Start -->
+                                <div class="tab-pane fade" id="download" role="tabpanel">
+                                    <div class="myaccount-content">
+                                        <h3>علاقه مندی ها</h3>
+                                        <div class="myaccount-table table-responsive text-center">
+                                            <div id="shop-1" class="tab-pane active ">
+                                                <div class="row">
+
+                                                    @foreach (var item in Model.UserProducts)
+                                                    {
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                                                            <div class="product-wrap mb-35 " style="text-align-last: center;">
+                                                                <div class="product-img mb-15 ">
+                                                                    <a asp-controller="Home" asp-action="Details" asp-route-Id="@item.Id"><img src="/Images/db_Images/@{@item.Id}-1.jpg" alt="product" style="height: 190px; width: 160px; object-fit: contain"></a>
+                                                                    <span class="@(item.Item.Discount!=0?(("price-dec")):"d-none")">@(item.Item.Discount!=0?((item.Item.Discount+"%")):"")</span>
+                                                                 
+                                                                </div>
+                                                                <div class="product-content text-center">
+                                                                    <span>@item.Name</span>
+                                                                    <h4><a asp-controller="Home" asp-action="Details" asp-route-productId="@item.Id">@item.Name</a></h4>
+                                                                    <div class="price-addtocart">
+                                                                        <div class="product-price">
+                                                                            <span style="@(@item.Item.QuantityInStuck!=0?"":"color: #919191;")">@(@item.Item.QuantityInStuck!=0?((item.Item.Discount!=0?(((Int64)item.Item.Price*((100-item.Item.Discount)/100)).ToString("#,0")+"تومان"):item.Item.Price.ToString("#,0")+"تومان")):"ناموجود")</span>
+                                                                            <span class="old mr-1">@(@item.Item.QuantityInStuck!=0?((item.Item.Discount!=0?(item.Item.Price.ToString("#,0")):"")):"")</span>
+                                                                        </div>
+                                                                        <div class="product-addtocart">
+                                                                            <a asp-controller="Home" asp-action="AddToCart" asp-route-Itemid="@item.ItemId" asp-route-qtyButton="1" title="افزودن به سبد خرید" class=" pl-2"><i class="la la-cart-plus " style="border-radius: 20px;background: #e4fff2;font-size: 32px;color: #18f9d0;"></i></a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Single Tab Content End -->
+                                    <!-- Single Tab Content Start -->
+                                    <div class="tab-pane fade"
+                                         id="payment-method"
+                                         role="tabpanel">
+                                        <div class="myaccount-content">
+                                            <h3>کیف پول</h3>
+                                            <p class="saved-message">
+                                                شما کیف پول فعالی ندارید!
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- Single Tab Content End -->
+                                    <!-- Single Tab Content Start -->
+                                    <div class="tab-pane fade"
+                                         id="address-edit"
+                                         role="tabpanel">
+                                        <div class="myaccount-content">
+                                            <h3>ادرس تحویل خرید</h3>
+                                            <address>
+                                                <p><strong>Alex Tuntuni</strong></p>
+                                                <p>
+                                                    1355 Market St, Suite 900 <br />
+                                                    San Francisco, CA 94103
+                                                </p>
+                                                <p>Mobile: (123) 456-7890</p>
+                                            </address>
+                                            <a href="#" class="check-btn sqr-btn"><i class="fa big fa-edit"></i> ویرایش ادرس</a>
+                                        </div>
+                                    </div>
+                                    <!-- Single Tab Content End -->
+                                    <!-- Single Tab Content Start -->
+                                    <div class="tab-pane fade"
+                                         id="account-info"
+                                         role="tabpanel">
+                                        <div class="myaccount-content">
+                                            <h3>جزئیات حساب کاربری</h3>
+                                            <div class="account-details-form">
+                                                <form action="#">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="first-name" class="required">نام:</label>
+                                                                <input type="text" id="first-name" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="last-name" class="required">نام خانوادگی:</label>
+                                                                <input type="text" id="last-name" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item ">
+                                                                <label for="display-name" class="required">تلفن ثبت شده:</label>
+                                                                <input type="text" id="" value="@Model.User.PhoneNumber" />
+                                                            </div>
+                                                        </div><div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="display-name" class="required">نام کاربری:</label>
+                                                                <input type="text" id="display-name" value="@Model.User.UserName" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="single-input-item">
+                                                        <label for="email" class="required">ایمیل:</label>
+                                                        <input type="email" id="email" value="@Model.User.Email" />
+                                                    </div>
+                                                    <fieldset>
+                                                        <legend>تغییر رمز عبور</legend>
+                                                        <div class="single-input-item">
+                                                            <label for="current-pwd" class="required">رمز عبور فعلی</label>
+                                                            <input type="password" id="current-pwd" />
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="single-input-item">
+                                                                    <label for="new-pwd" class="required">رمز عبور جدید</label>
+                                                                    <input type="password" id="new-pwd" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="single-input-item">
+                                                                    <label for="confirm-pwd" class="required">تکرار رمز عبور جدید</label>
+                                                                    <input type="password" id="confirm-pwd" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                    <div class="single-input-item">
+                                                        <button class="check-btn sqr-btn">
+                                                            ذخیره تغییرات
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Single Tab Content End -->
+                                </div>
+                            </div>
+                            <!-- My Account Tab Content End -->
+                        </div>
+                    </div>
+                    <!-- My Account Page End -->
+                </div>
+            </div>
+        </div>
+    </div>

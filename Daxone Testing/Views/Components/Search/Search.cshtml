@@ -1,0 +1,14 @@
+﻿@model IEnumerable<ShowGroupViewModel>
+
+<div class="search-style-4">
+    <form asp-controller="Product" asp-action="Shop" asp-route-GroupId="@Href($"/{ViewData["GroupId"]}")" asp-route-searchkey="@Href($"/{ViewData["SearchKey"]}")" asp-route-pageId="@Href($"/{ViewBag.pageId}")">
+        <div class="form-search-4">
+            <input id="search" type="search" value="" name="SearchKey" placeholder="جستجو کنید....." class="input-text">
+            <div>
+                <button>
+                    <i class="la la-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
